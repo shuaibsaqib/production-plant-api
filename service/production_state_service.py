@@ -117,9 +117,21 @@ class AverageBeltValueService:
                 elif not d['state']:
                     data.append({"id" : d['id'],"avg_belt1" : d['belt1'],"avg_belt2" : 0})
 
+        temp_data = {}
+        for d in data :
+            if temp_data.get(d['id']):
+                avg_belt1_new = (temp_data[d['id']]['avg_belt1'] + d['avg_belt1'])/2
+                avg_belt2_new = (temp_data[d['id']]['avg_belt2'] + d['avg_belt2'])/2
+                temp_data[d['id']] = {'avg_belt1' : avg_belt1_new , 'avg_belt2' : avg_belt2_new}
+            
+            else:
+                temp_data[d['id']] = {'avg_belt1' : d['avg_belt1'], 'avg_belt2' : d['avg_belt2']}
 
+        final_data = []
+        for k,v in temp_data.items():
+            final_data.append({'id' : k, 'avg_belt1' : v['avg_belt1'], 'avg_belt2' : v['avg_belt2']})
 
-        sorted_data = sorted(data, key=lambda k: k['id'])
+        sorted_data = sorted(final_data, key=lambda k: k['id'])
         return sorted_data
 
 
